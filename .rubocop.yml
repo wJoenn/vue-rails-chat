@@ -6,6 +6,7 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
   Exclude:
+    - 'Gemfile'
     - 'bin/**/*'
     - 'db/**/*'
     - 'config/**/*'
@@ -17,9 +18,6 @@ AllCops:
     - 'test/**/*'
     - 'vendor/**/*'
 
-Bundler/OrderedGems:
-  Enabled: false
-  
 Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
 

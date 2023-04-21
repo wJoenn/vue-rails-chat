@@ -1,0 +1,34 @@
+---
+name: Linter
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  rubocop:
+    # Ruby static code analyzer and formatter
+    # https://github.com/rubocop/rubocop
+    name: RuboCop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install dependencies
+        run: yarn vite:install
+      - name: Run ESLint
+        run: yarn lint
