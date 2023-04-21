@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+echo "Building project..."
+yarn vite:build
+
+echo "Pushing to Heroku..."
+git add .
+git commit -m "Pushing to prod"
+git push heroku master
+
+echo "Cleaning up..."
+git reset HEAD~
+rm -rf public/assets
+rm public/index.html
+
+echo "Deployment complete!"
