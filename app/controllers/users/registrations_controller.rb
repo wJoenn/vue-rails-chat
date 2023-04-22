@@ -6,7 +6,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def respond_with(resource, _opts = {})
     return register_success if resource.persisted?
 
-    register_failed
+    if resource.errors.any?
+      message = resource.errors.full_messages
+    else
+      message = "Something went wrong."
+    end
+
+    register_failed(message)
   end
 
   def register_success
@@ -16,9 +22,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     }, status: :ok
   end
 
-  def register_failed
-    render json: {
-      message: "Something went wrong."
-    }, status: :unprocessable_entity
+  def register_failed(message)
+    render json: { message: }, status: :unprocessable_entity
   end
 end

@@ -4,10 +4,22 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(_resource, _opts = {})
+    return log_in_success if current_user
+
+    log_in_failure
+  end
+
+  def log_in_success
     render json: {
       message: "You are logged in.",
       user: current_user
     }, status: :ok
+  end
+
+  def log_in_failure
+    render json: {
+      message: "Invalid Email or Password"
+    }, status: :unprocessable_entity
   end
 
   def respond_to_on_destroy
@@ -25,6 +37,6 @@ class Users::SessionsController < Devise::SessionsController
   def log_out_failure
     render json: {
       message: "Hmm nothing happened."
-    }, status: :unprocessable_entity
+    }, status: :not_found
   end
 end
