@@ -57,7 +57,7 @@ const useSessionStore = defineStore("SessionStore", {
           const error = await res.json()
           this.errors = error.message
 
-          console.log(`An error occured while logging in: ${error.message}`) // eslint-disable-line no-console
+          console.log(`An error occured: ${error.message}`) // eslint-disable-line no-console
           return false
         }
 
@@ -69,7 +69,7 @@ const useSessionStore = defineStore("SessionStore", {
 
         return true
       } catch (error) {
-        console.log(`An error occured while logging out: ${error}`) // eslint-disable-line no-console
+        console.log(`An error occured: ${error}`) // eslint-disable-line no-console
         return false
       }
     },
