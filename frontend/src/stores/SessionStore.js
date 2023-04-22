@@ -38,14 +38,14 @@ const useSessionStore = defineStore("SessionStore", {
 
   actions: {
     registerUser(params) {
-      return this.handleForm(`${API_URL}/users`, params)
+      return this.handleUserForm(`${API_URL}/users`, params)
     },
 
     loginUser(params) {
-      return this.handleForm(`${API_URL}/users/sign_in`, params)
+      return this.handleUserForm(`${API_URL}/users/sign_in`, params)
     },
 
-    async handleForm(url, params) {
+    async handleUserForm(url, params) {
       try {
         const res = await fetch(url, {
           method: "POST",
