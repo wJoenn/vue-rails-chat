@@ -1,92 +1,92 @@
 <template>
   <div id="home">
-    <h1>Hello {{ sessionStore.getUserEmail }}</h1>
+    <div class="logos">
+      <a href="https://guides.rubyonrails.org/" target="_blank">
+        <img src="../assets/images/rails.png" class="logo" alt="Rails logo">
+      </a>
 
-    <div>
-      <a href="https://vitejs.dev" target="_blank">
+      <a href="https://vitejs.dev" target="_blank" class="vite">
         <img src="../assets/images/vite.svg" class="logo" alt="Vite logo">
       </a>
 
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="../assets/images/vue.svg" class="logo vue" alt="Vue logo">
+      <a href="https://vuejs.org/" target="_blank" class="vue">
+        <img src="../assets/images/vue.svg" class="logo" alt="Vue logo">
       </a>
 
-      <a href="https://pinia.vuejs.org/" target="_blank">
-        <img src="../assets/images/pinia.svg" class="logo pinia" alt="Vue logo">
+      <a href="https://pinia.vuejs.org/" target="_blank" class="pinia">
+        <img src="../assets/images/pinia.svg" class="logo" alt="Pinia logo">
       </a>
     </div>
 
-    <HelloWorld msg="Vite + Vue" />
-
-    <button @click="sessionStore.logoutUser()">Log out</button>
-
-    <div>
-      <h2>Sign In</h2>
-      <form @submit.prevent="signIn">
-        <input v-model="signInEmail" type="text" placeholder="email">
-        <input v-model="signInPassword" type="password" placeholder="password">
-        <button>Sign in</button>
-      </form>
-
-      <h2>Sign Up</h2>
-      <form @submit.prevent="signUp">
-        <input v-model="signUpEmail" type="text" placeholder="email">
-        <input v-model="signUpPassword" type="password" placeholder="password">
-        <button>Sign up</button>
-      </form>
-    </div>
+    <button v-if="sessionStore.isLoggedIn" @click="sessionStore.logoutUser()">Log out</button>
+    <UserForm v-else />
   </div>
 </template>
 
 <script setup>
-  import { ref } from "vue"
-  import HelloWorld from "../components/HelloWorld.vue"
   import useSessionStore from "../stores/SessionStore"
+  import UserForm from "../components/UserForm.vue"
 
   const sessionStore = useSessionStore()
-  const signInEmail = ref("")
-  const signInPassword = ref("")
-  const signUpEmail = ref("")
-  const signUpPassword = ref("")
-
-  const resetRef = () => {
-    signInEmail.value = ""
-    signInPassword.value = ""
-    signUpEmail.value = ""
-    signUpPassword.value = ""
-  }
-
-  const signIn = async () => {
-    const params = { email: signInEmail.value, password: signInPassword.value }
-
-    const isSignedIn = await sessionStore.loginUser(params)
-    if (isSignedIn) resetRef()
-  }
-
-  const signUp = async () => {
-    const params = { email: signUpEmail.value, password: signUpPassword.value }
-
-    const isRegistered = await sessionStore.registerUser(params)
-    if (isRegistered) resetRef()
-  }
 </script>
 
 <style lang="scss" scoped>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    transition: filter 0.3s ease;
+  .logos {
+    display: flex;
+    gap: 30px;
+    left: 50%;
+    position: fixed;
+    top: 10px;
+    translate: -50%;
 
-    &:hover {
-      filter: drop-shadow(0 0 2em #646cffaa);
+    a {
+      align-items: center;
+      display: flex;
+      height: 120px;
+      justify-content: center;
+      position: relative;
+      width: 120px;
+
+      &::before {
+        background-image: linear-gradient(135deg, #be1818aa, #bb1616aa);
+        border-radius: 50%;
+        bottom: 50%;
+        content: "";
+        display: block;
+        filter: blur(2em);
+        height: 0px;
+        left: 50%;
+        position: absolute;
+        transition: all 0.3s ease;
+        translate: -50% 50%;
+        width: 0px;
+        z-index: -10;
+      }
+
+      &:hover::before {
+        height: 120px;
+        width: 120px;
+      }
+
+      &.pinia::before {
+        background-image: linear-gradient(20deg, #ffe368aa 40%, #23e233aa);
+      }
+
+      &.vite::before {
+        background-image: linear-gradient(135deg, #4cc2ffaa, #bd34feaa);
+      }
+
+      &.vue::before {
+        background-image: linear-gradient(to top, #42b883aa 40%, #375494aa);
+      }
     }
 
-    &.pinia:hover {
-      filter: drop-shadow(0 0 2em #ffe368aa);
-    }
-
-    &.vue:hover {
-      filter: drop-shadow(0 0 2em #42b883aa);
+    .logo {
+      height: 100%;
+      padding: 10px;
+      transition: filter 0.3s ease;
+      width: 100%;
+      z-index: 10;
     }
   }
 </style>
