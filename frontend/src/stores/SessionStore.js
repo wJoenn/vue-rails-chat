@@ -4,17 +4,17 @@ const API_URL = "http://localhost:3000"
 
 const useSessionStore = defineStore("SessionStore", {
   state: () => ({
-    auth_token: null,
+    authToken: null,
     user: {
       id: null,
-      email: null,
-      username: null
-    }
+      email: null
+    },
+    errors: []
   }),
 
   getters: {
     getAuthToken() {
-      return this.auth_token
+      return this.authToken
     },
 
     getUserEmail() {
@@ -30,58 +30,92 @@ const useSessionStore = defineStore("SessionStore", {
     },
 
     isLoggedIn() {
-      const loggedOut = this.auth_token === null || this.auth_token === JSON.stringify(null)
+      const loggedOut = this.authToken === null || this.authToken === JSON.stringify(null)
 
       return !loggedOut
     }
   },
 
   actions: {
-    async registerUser(payload) {
-      const res = await fetch(`${API_URL}/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload })
-      })
-
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`);
-      }
-
-      console.log(res.json())
+    registerUser(params) {
+      return this.handleForm(`${API_URL}/users`, params)
     },
 
-    async loginUser(payload) {
-      const res = await fetch(`${API_URL}/users/sign_in`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload })
-      })
-
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`);
-      }
-      console.log(res.json())
+    loginUser(params) {
+      return this.handleForm(`${API_URL}/users/sign_in`, params)
     },
 
-    async loginUserWithToken(payload) {
-      const res = await fetch(`${API_URL}/member-data`, {
-        headers: { authorization: payload.auth_token }
-      })
+    async handleForm(url, params) {
+      try {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user: params })
+        })
 
-      console.log(res.json())
+        if (!res.ok) {
+          const error = await res.json()
+          this.errors = error.message
+
+          console.log(`An error occured while logging in: ${error.message}`) // eslint-disable-line no-console
+          return false
+        }
+
+        this.authToken = res.headers.get("Authorization")
+        localStorage.setItem("authToken", this.authToken)
+
+        const data = await res.json()
+        this.user = data.user
+
+        return true
+      } catch (error) {
+        console.log(`An error occured while logging out: ${error}`) // eslint-disable-line no-console
+        return false
+      }
+    },
+
+    async loginUserWithToken(token) {
+      try {
+        const res = await fetch(`${API_URL}/member-data`, {
+          headers: { Authorization: token }
+        })
+
+        if (!res.ok) {
+          const error = await res.json()
+          console.log(`An error occured while logging in: ${error.message}`) // eslint-disable-line no-console
+          this.reset()
+        } else {
+          const data = await res.json()
+          this.user = data.user
+          this.authToken = localStorage.getItem("authToken")
+        }
+      } catch (error) {
+        console.log(`An error occured while logging in: ${error}`) // eslint-disable-line no-console
+      }
     },
 
     async logoutUser() {
-      const res = await fetch(`${API_URL}/users/sign_out`, {
-        method: "DELETE",
-        headers: { authorization: this.auth_token }
-      })
+      try {
+        const res = await fetch(`${API_URL}/users/sign_out`, {
+          method: "DELETE",
+          headers: { Authorization: this.authToken }
+        })
 
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`);
+        if (!res.ok) {
+          const error = await res.json()
+
+          console.log(`An error occured while logging in: ${error.message}`) // eslint-disable-line no-console
+        } else {
+          this.reset()
+        }
+      } catch (error) {
+        console.log(`An error occured while logging out: ${error}`) // eslint-disable-line no-console
       }
-      console.log(res.json())
+    },
+
+    reset() {
+      this.$reset()
+      localStorage.removeItem("authToken")
     }
   }
 })
