@@ -1,6 +1,11 @@
 <template>
   <div id="user-form">
     <h2>V•O•R•P</h2>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+      <!-- eslint-disable-next-line max-len -->
+      <path fill="#42b883" fill-opacity="1" d="M0,128L40,133.3C80,139,160,149,240,149.3C320,149,400,139,480,154.7C560,171,640,213,720,197.3C800,181,880,107,960,112C1040,117,1120,203,1200,229.3C1280,256,1360,224,1400,208L1440,192L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z" />
+    </svg>
+
     <div v-if="signingIn" class="sign-in">
       <form @submit.prevent="signIn">
         <div>
@@ -109,8 +114,14 @@
       border: none;
       cursor: pointer;
       font-weight: 600;
+      max-height: 35px;
       padding: 10px;
       text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease;
+
+      &:hover {
+        filter: brightness(120%);
+      }
     }
 
     div {
@@ -145,13 +156,11 @@
   }
 
   h2 {
-    background-image: linear-gradient(135deg, #2ce793aa, #328660aa);
+    background-color: #42b883;
     border-radius: 10px 10px 0 0;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5), 0px 0px 5px rgba(0, 0, 0, 0.5);
     padding: 15px;
-    position: relative;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 10;
   }
 
   p {
@@ -162,6 +171,18 @@
   span {
     color: #42b883aa;
     cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+    z-index: 10;
+
+    &:hover {
+      color: lighten(#42b883, 10%);
+    }
+  }
+
+  svg {
+    background-color: #242d36;
+    margin: -20px 0 -20px;
   }
 
   .password {
