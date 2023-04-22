@@ -27,6 +27,7 @@
     "arrow-parens": "off",
     "class-methods-use-this": "off",
     "comma-dangle": "off",
+    "max-len": ["error", 120],
     "no-param-reassign": "off",
     "no-plusplus": "off",
     "prefer-destructuring": "off",
