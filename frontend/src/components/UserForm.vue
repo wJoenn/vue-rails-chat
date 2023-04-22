@@ -196,4 +196,9 @@
       margin: 0;
     }
   }
+
+  .svg-inline--fa {
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
 </style>
