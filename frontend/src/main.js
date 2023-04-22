@@ -12,11 +12,11 @@ const pinia = createPinia()
 
 // Load JWT from local storage on refresh
 
-const authToken = localStorage.getItem("auth_token")
+const authToken = localStorage.getItem("authToken")
 const authTokenExists = authToken !== "undefined" && authToken !== null
 
 if (authTokenExists) {
-  await useSessionStore.loginUserWithToken(authToken)
+  await useSessionStore(pinia).loginUserWithToken(authToken)
 }
 
 app.use(router).use(pinia).mount("#app")
