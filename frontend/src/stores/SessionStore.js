@@ -5,12 +5,32 @@ const useSessionStore = defineStore("SessionStore", {
     auth_token: null,
     user: {
       id: null,
-      username: null,
-      email: null
+      email: null,
+      username: null
     }
   }),
-  actions: {
+  getters: {
+    getAuthToken() {
+      return this.auth_token
+    },
 
+    getUserEmail() {
+      return this.user.email
+    },
+
+    getUserId() {
+      return this.user.id
+    },
+
+    getUserUsername() {
+      return this.user.username
+    },
+
+    isLoggedIn() {
+      const loggedOut = this.auth_token === null || this.auth_token === JSON.stringify(null)
+
+      return !loggedOut
+    }
   }
 })
 
