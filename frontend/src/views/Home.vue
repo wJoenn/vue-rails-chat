@@ -54,12 +54,12 @@
         content: "";
         display: block;
         filter: blur(2em);
-        height: 0px;
+        height: 50px;
         left: 50%;
         position: absolute;
         transition: all 0.3s ease;
         translate: -50% 50%;
-        width: 0px;
+        width: 50px;
         z-index: -10;
       }
 
