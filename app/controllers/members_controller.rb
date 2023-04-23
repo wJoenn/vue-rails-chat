@@ -3,7 +3,10 @@ class MembersController < ApplicationController
     user = set_user_from_token
 
     if user
-      render json: { message: "If you see this you're logged in", user: }
+      render json: {
+        message: "If you see this you're logged in",
+        user:
+      }, status: :ok
     else
       jwt_payload = set_jwt_payload
       jti = jwt_payload["jti"]
