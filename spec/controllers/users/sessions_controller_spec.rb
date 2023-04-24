@@ -12,7 +12,6 @@ RSpec.describe Users::SessionsController, type: :controller do
   describe "#respond_with" do
     let!(:user) { User.create(email: "user@example.com", password: "password") }
 
-
     before(:each) do
       request.env["devise.mapping"] = Devise.mappings[:user]
     end

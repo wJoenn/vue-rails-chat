@@ -40,7 +40,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
       end
 
       it "responds with a status code of 200" do
-        expect(response.status).to eq(200)
+        expect(response).to be_successful
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
       end
 
       it "responds with a status code of 422" do
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
