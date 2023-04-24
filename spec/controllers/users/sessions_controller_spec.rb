@@ -8,6 +8,11 @@ def log_out
   delete :destroy, format: :json
 end
 
+def respond_with_json?
+  expect(response.body.class).to be(String)
+  expect(response.parsed_body.class).to be(Hash)
+end
+
 RSpec.describe Users::SessionsController, type: :controller do
   describe "#respond_with" do
     let!(:user) { User.create(email: "user@example.com", password: "password", username: "Joenn") }
@@ -16,27 +21,10 @@ RSpec.describe Users::SessionsController, type: :controller do
       request.env["devise.mapping"] = Devise.mappings[:user]
     end
 
-    it "responds with a JSON object" do
-      log_in(user.email)
-
-      expect(response.body.class).to eq(String)
-      expect(response.parsed_body.class).to eq(Hash)
-
-      log_in("wrong email")
-
-      expect(response.body.class).to eq(String)
-      expect(response.parsed_body.class).to eq(Hash)
-
-      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-      log_out
-
-      expect(response.body.class).to eq(String)
-      expect(response.parsed_body.class).to eq(Hash)
-
-      log_out
-
-      expect(response.body.class).to eq(String)
-      expect(response.parsed_body.class).to eq(Hash)
+    shared_examples "a JSON object" do
+      it "responds with a JSON object" do
+        respond_with_json?
+      end
     end
 
     context "When user is logged in sucessfuly" do
@@ -44,10 +32,10 @@ RSpec.describe Users::SessionsController, type: :controller do
         log_in(user.email)
       end
 
+      it_behaves_like "a JSON object"
+
       it "responds with the logged in user and a success message" do
-        p response
-        expect(response.parsed_body.key?("user")).to eq(true)
-        expect(response.parsed_body.key?("message")).to eq(true)
+        expect(response.parsed_body.key?("user")).to be_truthy
         expect(response.parsed_body["message"]).to eq("You are logged in.")
       end
 
@@ -62,8 +50,9 @@ RSpec.describe Users::SessionsController, type: :controller do
         get :new, format: :json if response.status == 401
       end
 
+      it_behaves_like "a JSON object"
+
       it "responds with an error message" do
-        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("Invalid Email or Password.")
       end
 
@@ -78,8 +67,8 @@ RSpec.describe Users::SessionsController, type: :controller do
         log_out
       end
 
+      it_behaves_like "a JSON object"
       it "responds with a success message" do
-        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("You are logged out.")
       end
 
@@ -93,8 +82,9 @@ RSpec.describe Users::SessionsController, type: :controller do
         log_out
       end
 
+      it_behaves_like "a JSON object"
+
       it "responds with a success message" do
-        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("Hmm nothing happened.")
       end
 
