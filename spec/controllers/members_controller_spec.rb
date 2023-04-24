@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe MembersController do
+RSpec.describe MembersController, type: :controller do
   describe "#show" do
     let(:user) { User.create!(email: "user@example.com", password: "password") }
     let(:jwt_token) do
@@ -9,7 +9,7 @@ RSpec.describe MembersController do
         scp: "user",
         aud: nil,
         iat: Time.current.to_i,
-        exp: (Time.current + 1.month).to_i,
+        exp: 1.month.from_now.to_i,
         jti: SecureRandom.uuid
       }
 
@@ -22,7 +22,7 @@ RSpec.describe MembersController do
         get :show
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)["message"]).to eq("If you see this you're logged in")
+        expect(response.parsed_body["message"]).to eq("If you see this you're logged in")
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe MembersController do
         get :show
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)["message"]).to eq("Your JWT token was linked to a deleted user account")
+        expect(response.parsed_body["message"]).to eq("Your JWT token was linked to a deleted user account")
       end
     end
   end
