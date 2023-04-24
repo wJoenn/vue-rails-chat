@@ -1,4 +1,6 @@
 class MembersController < ApplicationController
+  skip_before_action :authenticate_user!, only: %i[show]
+
   def show
     user = set_user_from_token
 

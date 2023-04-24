@@ -27,6 +27,11 @@
     <div v-else class="sign-up">
       <form @submit.prevent="signUp">
         <div>
+          <label for="username">Username</label>
+          <input v-model="username" type="text" placeholder="Please choose your username" name="username">
+        </div>
+
+        <div>
           <label for="email">Email</label>
           <input v-model="signUpEmail" type="text" placeholder="Please enter your email" name="email">
         </div>
@@ -62,6 +67,7 @@
   const signInPassword = ref("")
   const signUpEmail = ref("")
   const signUpPassword = ref("")
+  const username = ref("")
   const signingIn = ref(true)
   const isHidden = ref(true)
 
@@ -80,7 +86,7 @@
   }
 
   const signUp = async () => {
-    const params = { email: signUpEmail.value, password: signUpPassword.value }
+    const params = { email: signUpEmail.value, password: signUpPassword.value, username: username.value }
 
     const isRegistered = await sessionStore.registerUser(params)
     if (isRegistered) resetRef()

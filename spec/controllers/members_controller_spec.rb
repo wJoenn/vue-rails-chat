@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe MembersController, type: :controller do
   describe "#show" do
-    let(:user) { User.create!(email: "user@example.com", password: "password") }
+    let(:user) { User.create!(email: "user@example.com", password: "password", username: "Joenn") }
     let(:jwt_token) do
       token = {
         sub: user.id,

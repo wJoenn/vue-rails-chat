@@ -10,7 +10,7 @@ end
 
 RSpec.describe Users::SessionsController, type: :controller do
   describe "#respond_with" do
-    let!(:user) { User.create(email: "user@example.com", password: "password") }
+    let!(:user) { User.create(email: "user@example.com", password: "password", username: "Joenn") }
 
     before(:each) do
       request.env["devise.mapping"] = Devise.mappings[:user]
@@ -45,6 +45,7 @@ RSpec.describe Users::SessionsController, type: :controller do
       end
 
       it "responds with the logged in user and a success message" do
+        p response
         expect(response.parsed_body.key?("user")).to eq(true)
         expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("You are logged in.")

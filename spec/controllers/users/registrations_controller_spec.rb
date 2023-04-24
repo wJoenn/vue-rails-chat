@@ -8,8 +8,8 @@ RSpec.describe Users::RegistrationsController, type: :controller do
   describe "#respond_with" do
     before(:each) do
       request.env["devise.mapping"] = Devise.mappings[:user]
-      @correct_user = { user: { email: "user@example.com", password: "password" } }
-      @wrong_user = { user: { email: "user@example", password: "password" } }
+      @correct_user = { user: { email: "user@example.com", password: "password", username: "Joenn" } }
+      @wrong_user = { user: { email: "user@example", password: "password", username: "Joenn" } }
     end
 
     it "responds with a JSON object" do
