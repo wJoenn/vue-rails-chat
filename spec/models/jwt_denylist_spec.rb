@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe JwtDenylist, type: :model do
+  let(:jti) { "token" }
+  let(:exp) { 1.month.from_now }
   describe "#create" do
     it "adds a token to the denylist" do
-      jti = "68s4rg35rhq5dr4h3qrdhqd9r5h4qw3d9r5hq"
-      exp = Time.current + 1.month.to_i
       jwt = JwtDenylist.create!(jti:, exp:)
 
-      expect(jwt.persisted?).to eq(true)
+      expect(jwt.persisted?).to be_truthy
     end
   end
 end

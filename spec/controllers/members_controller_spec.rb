@@ -16,24 +16,25 @@ RSpec.describe MembersController, type: :controller do
       JWT.encode(token, Rails.application.credentials.devise[:jwt_secret_key])
     end
 
+    before(:each) do
+      request.headers["Authorization"] = "Bearer #{jwt_token}"
+    end
+
     context "When user is logged in" do
       it "returns a success response" do
-        request.headers["Authorization"] = "Bearer #{jwt_token}"
         get :show
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to be_successful
         expect(response.parsed_body["message"]).to eq("If you see this you're logged in")
       end
     end
 
     context "When user is not logged in" do
       before do
-        # Invalidate the JWT token by deleting the user
         user.destroy
       end
 
       it "returns an error response" do
-        request.headers["Authorization"] = "Bearer #{jwt_token}"
         get :show
 
         expect(response).to have_http_status(:unprocessable_entity)
