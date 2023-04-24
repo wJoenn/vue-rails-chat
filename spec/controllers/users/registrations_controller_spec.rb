@@ -59,6 +59,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
         allow_any_instance_of(User).to receive(:persisted?).and_return(false)
         create_user(@correct_user)
+
         expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("Something went wrong.")
       end
