@@ -33,13 +33,13 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         expect(User.exists?(email: "user@example.com")).to eq(true)
       end
 
-      it "returns the newly created user and a success message" do
-        expect(response.parsed_body.has_key?("user")).to eq(true)
-        expect(response.parsed_body.has_key?("message")).to eq(true)
+      it "responds with the newly created user and a success message" do
+        expect(response.parsed_body.key?("user")).to eq(true)
+        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("Signed up successfully.")
       end
 
-      it "returns with a status code of 200" do
+      it "responds with a status code of 200" do
         expect(response.status).to eq(200)
       end
     end
@@ -53,17 +53,17 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         expect(User.exists?(email: "user@example.com")).to eq(false)
       end
 
-      it "returns an accurate error message" do
-        expect(response.parsed_body.has_key?("message")).to eq(true)
+      it "responds with an accurate error message" do
+        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to include("Email is invalid")
 
         allow_any_instance_of(User).to receive(:persisted?).and_return(false)
         create_user(@correct_user)
-        expect(response.parsed_body.has_key?("message")).to eq(true)
+        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("Something went wrong.")
       end
 
-      it "returns with a status code of 422" do
+      it "responds with a status code of 422" do
         expect(response.status).to eq(422)
       end
     end
