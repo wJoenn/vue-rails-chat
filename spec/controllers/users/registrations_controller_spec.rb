@@ -4,6 +4,11 @@ def create_user(params)
   post :create, format: :json, params:
 end
 
+def responds_with_json?
+  expect(response.body.class).to be(String)
+  expect(response.parsed_body.class).to be(Hash)
+end
+
 RSpec.describe Users::RegistrationsController, type: :controller do
   describe "#respond_with" do
     before(:each) do
@@ -12,16 +17,10 @@ RSpec.describe Users::RegistrationsController, type: :controller do
       @wrong_user = { user: { email: "user@example", password: "password", username: "Joenn" } }
     end
 
-    it "responds with a JSON object" do
-      create_user(@correct_user)
-
-      expect(response.body.class).to eq(String)
-      expect(response.parsed_body.class).to eq(Hash)
-
-      create_user(@wrong_user)
-
-      expect(response.body.class).to eq(String)
-      expect(response.parsed_body.class).to eq(Hash)
+    shared_examples "a JSON object" do
+      it "responds with a JSON object" do
+        responds_with_json?
+      end
     end
 
     context "When user is registered successfuly" do
@@ -29,13 +28,14 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         create_user(@correct_user)
       end
 
+      it_behaves_like "a JSON object"
+
       it "creates a new user" do
-        expect(User.exists?(email: "user@example.com")).to eq(true)
+        expect(User.exists?(email: "user@example.com")).to be_truthy
       end
 
       it "responds with the newly created user and a success message" do
-        expect(response.parsed_body.key?("user")).to eq(true)
-        expect(response.parsed_body.key?("message")).to eq(true)
+        expect(response.parsed_body.key?("user")).to be_truthy
         expect(response.parsed_body["message"]).to eq("Signed up successfully.")
       end
 
@@ -49,18 +49,18 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         create_user(@wrong_user)
       end
 
+      it_behaves_like "a JSON object"
+
       it "does not create a user" do
-        expect(User.exists?(email: "user@example.com")).to eq(false)
+        expect(User.exists?(email: "user@example.com")).to be_falsy
       end
 
       it "responds with an accurate error message" do
-        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to include("Email is invalid")
 
         allow_any_instance_of(User).to receive(:persisted?).and_return(false)
         create_user(@correct_user)
 
-        expect(response.parsed_body.key?("message")).to eq(true)
         expect(response.parsed_body["message"]).to eq("Something went wrong.")
       end
 

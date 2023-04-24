@@ -8,7 +8,7 @@ def log_out
   delete :destroy, format: :json
 end
 
-def respond_with_json?
+def responds_with_json?
   expect(response.body.class).to be(String)
   expect(response.parsed_body.class).to be(Hash)
 end
@@ -23,7 +23,7 @@ RSpec.describe Users::SessionsController, type: :controller do
 
     shared_examples "a JSON object" do
       it "responds with a JSON object" do
-        respond_with_json?
+        responds_with_json?
       end
     end
 
