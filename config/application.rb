@@ -33,5 +33,7 @@ module VueRailsChat
     config.api_only = true
 
     config.generators.test_framework :rspec
+
+    config.hosts.clear
   end
 end
