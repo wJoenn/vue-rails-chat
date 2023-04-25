@@ -8,6 +8,8 @@ class User < ApplicationRecord
     :jwt_authenticatable,
     jwt_revocation_strategy: JwtDenylist
 
+  has_many :messages, dependent: :destroy
+
   validates :username, presence: true, uniqueness: true
   validates :email, format: { with: /\A[\w\d]+(?:[._-]?[\w\d]+)*@[\w\d]+(?:[.-]?[\w\d]+)*(?:\.\w{2,})+\z/ }
 end
