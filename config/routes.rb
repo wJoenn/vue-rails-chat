@@ -5,9 +5,7 @@ Rails.application.routes.draw do
       registrations: "users/registrations"
     }
 
-  get "/member-data", to: "members#show"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  resources :chatrooms, only: %i[index]
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  get "/member-data", to: "members#show"
 end
