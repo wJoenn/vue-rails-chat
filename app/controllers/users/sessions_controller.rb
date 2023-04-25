@@ -21,7 +21,7 @@ class Users::SessionsController < Devise::SessionsController
   def log_in_failure
     render json: {
       message: "Invalid Email or Password."
-    }, status: :bad_request
+    }, status: :unprocessable_entity
   end
 
   def respond_to_on_destroy
