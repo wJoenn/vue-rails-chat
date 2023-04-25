@@ -1,11 +1,14 @@
 require "rails_helper"
 
 def log_in(email)
-  post :create, format: :json, params: { user: { email:, password: user.password } }
+  post "/users/sign_in",
+    params: { user: { email:, password: user.password } }.to_json,
+    headers: { "Content-Type": "application/json" },
+    env: { "devise.mapping": Devise.mappings[:user] }
 end
 
 def log_out
-  delete :destroy, format: :json
+  delete "/users/sign_out", env: { "devise.mapping": Devise.mappings[:user] }
 end
 
 def responds_with_json?
@@ -13,20 +16,16 @@ def responds_with_json?
   expect(response.parsed_body.class).to be(Hash)
 end
 
-RSpec.describe Users::SessionsController, type: :controller do
-  describe "#respond_with" do
-    let!(:user) { User.create(email: "user@example.com", password: "password", username: "Joenn") }
+RSpec.describe "Users::Sessions", type: :request do
+  let!(:user) { User.create(email: "user@example.com", password: "password", username: "Joenn") }
 
-    before(:each) do
-      request.env["devise.mapping"] = Devise.mappings[:user]
+  shared_examples "a JSON object" do
+    it "responds with a JSON object" do
+      responds_with_json?
     end
+  end
 
-    shared_examples "a JSON object" do
-      it "responds with a JSON object" do
-        responds_with_json?
-      end
-    end
-
+  describe "POST /create" do
     context "When user is logged in sucessfuly" do
       before do
         log_in(user.email)
@@ -47,7 +46,7 @@ RSpec.describe Users::SessionsController, type: :controller do
     context "When user is not logged in successfuly" do
       before do
         log_in("wrong email")
-        get :new, format: :json if response.status == 401
+        get "/users/sign_in", headers: { "Content-Type": "application/json" } if response.status == 401
       end
 
       it_behaves_like "a JSON object"
@@ -56,11 +55,13 @@ RSpec.describe Users::SessionsController, type: :controller do
         expect(response.parsed_body["message"]).to eq("Invalid Email or Password.")
       end
 
-      it "responds with a status code of 400" do
-        expect(response).to have_http_status(:bad_request)
+      it "responds with a status code of 422" do
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
+  end
 
+  describe "DELETE /destroy" do
     context "When user is logged out successfully" do
       before do
         allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)

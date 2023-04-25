@@ -3,6 +3,8 @@ class Users::SessionsController < Devise::SessionsController
 
   private
 
+  def set_flash_message(_key, _kind, _options); end
+
   def respond_with(_resource, _opts = {})
     return log_in_success if current_user
 

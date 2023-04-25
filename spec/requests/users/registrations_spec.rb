@@ -1,7 +1,10 @@
 require "rails_helper"
 
 def create_user(params)
-  post :create, format: :json, params: { user: params }
+  post "/users",
+    params: { user: params }.to_json,
+    headers: { "Content-Type": "application/json" },
+    env: { "devise.mapping": Devise.mappings[:user] }
 end
 
 def responds_with_json?
@@ -9,14 +12,10 @@ def responds_with_json?
   expect(response.parsed_body.class).to be(Hash)
 end
 
-RSpec.describe Users::RegistrationsController, type: :controller do
-  describe "#respond_with" do
+RSpec.describe "Users::Registrations", type: :request do
+  describe "POST /create" do
     let!(:correct_user_params) { { email: "user@example.com", password: "password", username: "Joenn" } }
     let!(:wrong_user_params) { { email: "user@example", password: "password", username: "Joenn" } }
-
-    before(:each) do
-      request.env["devise.mapping"] = Devise.mappings[:user]
-    end
 
     shared_examples "a JSON object" do
       it "responds with a JSON object" do

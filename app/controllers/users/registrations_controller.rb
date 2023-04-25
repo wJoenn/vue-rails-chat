@@ -3,6 +3,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   private
 
+  def set_flash_message(_key, _kind, _options); end
+
   def respond_with(resource, _opts = {})
     return register_success if resource.persisted?
 
