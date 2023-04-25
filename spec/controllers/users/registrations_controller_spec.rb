@@ -13,6 +13,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
   describe "#respond_with" do
     let!(:correct_user_params) { { email: "user@example.com", password: "password", username: "Joenn" } }
     let!(:wrong_user_params) { { email: "user@example", password: "password", username: "Joenn" } }
+
     before(:each) do
       request.env["devise.mapping"] = Devise.mappings[:user]
     end

@@ -1,10 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Chatroom, type: :model do
+  let!(:chatroom) { Chatroom.create(name: "general") }
   describe "validation" do
     it "creates a new Chatroom with proper params" do
-      chatroom = Chatroom.create(name: "general")
-
       expect(chatroom.persisted?).to be_truthy
     end
 
@@ -15,10 +14,9 @@ RSpec.describe Chatroom, type: :model do
     end
 
     it "requires the name to be unique" do
-      Chatroom.create(name: "general")
-      chatroom = Chatroom.create(name: "general")
+      chatroom_dup = Chatroom.create(name: "general")
 
-      expect(chatroom.persisted?).to be_falsy
+      expect(chatroom_dup.persisted?).to be_falsy
     end
   end
 end

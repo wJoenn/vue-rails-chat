@@ -6,33 +6,34 @@ RSpec.describe User, type: :model do
   let!(:username) { "Joenn" }
   let!(:user) { User.create(email:, password:, username:) }
 
-  describe "#create" do
-    it "creates a new user" do
+  describe "validation" do
+    it "creates a new user with the proper params" do
       expect(user.persisted?).to be_truthy
     end
 
     it "requires a valid email" do
-      user_one = User.create(password:, username:)
-      user_two = User.create(email: "", password:, username:)
-      user_three = User.create(email: "user@example", password:, username:)
+      user = User.create(password:, username:)
+      expect(user.persisted?).to be_falsy
 
-      expect(user_one.persisted?).to be_falsy
-      expect(user_two.persisted?).to be_falsy
-      expect(user_three.persisted?).to be_falsy
+      user = User.create(email: "", password:, username:)
+      expect(user.persisted?).to be_falsy
+
+      user = User.create(email: "user@example", password:, username:)
+      expect(user.persisted?).to be_falsy
     end
 
     it "requires the email to be unique" do
-      user_one = User.create(email:, password:, username: "wJoenn")
+      user_dup = User.create(email:, password:, username: "wJoenn")
 
-      expect(user_one.persisted?).to be_falsy
+      expect(user_dup.persisted?).to be_falsy
     end
 
     it "requires a valid password" do
-      user_one = User.create(email:, username:)
-      user_two = User.create(email:, password: "short", username:)
+      user = User.create(email:, username:)
+      expect(user.persisted?).to be_falsy
 
-      expect(user_one.persisted?).to be_falsy
-      expect(user_two.persisted?).to be_falsy
+      user = User.create(email:, password: "short", username:)
+      expect(user.persisted?).to be_falsy
     end
 
     it "saves the password securely" do
@@ -40,15 +41,15 @@ RSpec.describe User, type: :model do
     end
 
     it "requires a valid username" do
-      user_one = User.create(email:, password:)
+      user = User.create(email:, password:)
 
-      expect(user_one.persisted?).to be_falsy
+      expect(user.persisted?).to be_falsy
     end
 
     it "requires the username to be unique" do
-      user_one = User.create(email: "joenn@example.com", password:, username:)
+      user_dup = User.create(email: "joenn@example.com", password:, username:)
 
-      expect(user_one.persisted?).to be_falsy
+      expect(user_dup.persisted?).to be_falsy
     end
   end
 end

@@ -68,6 +68,7 @@ RSpec.describe Users::SessionsController, type: :controller do
       end
 
       it_behaves_like "a JSON object"
+
       it "responds with a success message" do
         expect(response.parsed_body["message"]).to eq("You are logged out.")
       end
