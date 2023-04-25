@@ -1,7 +1,7 @@
 require "rails_helper"
 
 def create_user(params)
-  post :create, format: :json, params:
+  post :create, format: :json, params: { user: params }
 end
 
 def responds_with_json?
@@ -11,10 +11,10 @@ end
 
 RSpec.describe Users::RegistrationsController, type: :controller do
   describe "#respond_with" do
+    let!(:correct_user_params) { { email: "user@example.com", password: "password", username: "Joenn" } }
+    let!(:wrong_user_params) { { email: "user@example", password: "password", username: "Joenn" } }
     before(:each) do
       request.env["devise.mapping"] = Devise.mappings[:user]
-      @correct_user = { user: { email: "user@example.com", password: "password", username: "Joenn" } }
-      @wrong_user = { user: { email: "user@example", password: "password", username: "Joenn" } }
     end
 
     shared_examples "a JSON object" do
@@ -25,7 +25,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
     context "When user is registered successfuly" do
       before do
-        create_user(@correct_user)
+        create_user(correct_user_params)
       end
 
       it_behaves_like "a JSON object"
@@ -46,7 +46,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
     context "When user is not registered successfully" do
       before do
-        create_user(@wrong_user)
+        create_user(wrong_user_params)
       end
 
       it_behaves_like "a JSON object"
@@ -59,7 +59,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         expect(response.parsed_body["message"]).to include("Email is invalid")
 
         allow_any_instance_of(User).to receive(:persisted?).and_return(false)
-        create_user(@correct_user)
+        create_user(correct_user_params)
 
         expect(response.parsed_body["message"]).to eq("Something went wrong.")
       end
