@@ -24,10 +24,13 @@
 </template>
 
 <script setup>
+  import { useRouter } from "vue-router"
   import useSessionStore from "../stores/SessionStore"
   import UserForm from "../components/UserForm.vue"
 
+  const router = useRouter()
   const sessionStore = useSessionStore()
+  if (sessionStore.isLoggedIn) router.push({ name: "Chat" })
 </script>
 
 <style lang="scss" scoped>

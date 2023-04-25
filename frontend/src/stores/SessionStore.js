@@ -7,7 +7,8 @@ const useSessionStore = defineStore("SessionStore", {
     authToken: null,
     user: {
       id: null,
-      email: null
+      email: null,
+      username: null
     },
     errors: []
   }),

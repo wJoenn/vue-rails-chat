@@ -60,8 +60,10 @@
 
 <script setup>
   import { ref } from "vue"
+  import { useRouter } from "vue-router"
   import useSessionStore from "../stores/SessionStore"
 
+  const router = useRouter()
   const sessionStore = useSessionStore()
   const signInEmail = ref("")
   const signInPassword = ref("")
@@ -71,25 +73,18 @@
   const signingIn = ref(true)
   const isHidden = ref(true)
 
-  const resetRef = () => {
-    signInEmail.value = ""
-    signInPassword.value = ""
-    signUpEmail.value = ""
-    signUpPassword.value = ""
-  }
-
   const signIn = async () => {
     const params = { email: signInEmail.value, password: signInPassword.value }
 
     const isSignedIn = await sessionStore.loginUser(params)
-    if (isSignedIn) resetRef()
+    if (isSignedIn) router.push({ name: "Chat" })
   }
 
   const signUp = async () => {
     const params = { email: signUpEmail.value, password: signUpPassword.value, username: username.value }
 
     const isRegistered = await sessionStore.registerUser(params)
-    if (isRegistered) resetRef()
+    if (isRegistered) router.push({ name: "Chat" })
   }
 
   const toggleHidden = () => {
