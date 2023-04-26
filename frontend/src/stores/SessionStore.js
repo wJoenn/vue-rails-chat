@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 
-const API_URL = "http://localhost:3000"
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 const useSessionStore = defineStore("SessionStore", {
   state: () => ({
@@ -39,11 +39,11 @@ const useSessionStore = defineStore("SessionStore", {
 
   actions: {
     registerUser(params) {
-      return this.handleUserForm(`${API_URL}/users`, params)
+      return this.handleUserForm(`${BACKEND_URL}/users`, params)
     },
 
     loginUser(params) {
-      return this.handleUserForm(`${API_URL}/users/sign_in`, params)
+      return this.handleUserForm(`${BACKEND_URL}/users/sign_in`, params)
     },
 
     async handleUserForm(url, params) {
@@ -77,7 +77,7 @@ const useSessionStore = defineStore("SessionStore", {
 
     async loginUserWithToken(token) {
       try {
-        const res = await fetch(`${API_URL}/member-data`, {
+        const res = await fetch(`${BACKEND_URL}/member-data`, {
           headers: { Authorization: token }
         })
 
@@ -97,7 +97,7 @@ const useSessionStore = defineStore("SessionStore", {
 
     async logoutUser() {
       try {
-        const res = await fetch(`${API_URL}/users/sign_out`, {
+        const res = await fetch(`${BACKEND_URL}/users/sign_out`, {
           method: "DELETE",
           headers: { Authorization: this.authToken }
         })

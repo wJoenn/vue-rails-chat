@@ -11,7 +11,8 @@
 
   const chatrooms = ref([])
 
-  const url = "http://localhost:3000/chatrooms"
+  const backendUrl = import.meta.env.VITE_BACKEND_URL
+  const url = `${backendUrl}/chatrooms`
   fetch(url, {
     headers: { Authorization: localStorage.getItem("authToken") }
   }).then(res => res.json())
