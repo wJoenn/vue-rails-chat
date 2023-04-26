@@ -5,6 +5,7 @@
   },
   "extends": [
     "airbnb-base",
+    "plugin:import/recommended",
     "plugin:vue/vue3-recommended"
   ],
   "overrides": [
@@ -27,6 +28,7 @@
     "arrow-parens": "off",
     "class-methods-use-this": "off",
     "comma-dangle": "off",
+    "import/no-extraneous-dependencies": "off",
     "max-len": ["error", 120],
     "no-param-reassign": "off",
     "no-plusplus": "off",
