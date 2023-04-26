@@ -18,8 +18,7 @@
       </a>
     </div>
 
-    <button v-if="sessionStore.isLoggedIn" @click="sessionStore.logoutUser()">Log out</button>
-    <UserForm v-else />
+    <UserForm />
   </div>
 </template>
 

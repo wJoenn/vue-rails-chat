@@ -25,6 +25,14 @@ const routes = [
     name: "Chat",
     component: Chat,
     beforeEnter: authGuard
+  },
+  {
+    path: "/logout",
+    name: "Logout",
+    beforeEnter: async (_to, _from, next) => {
+      await useSessionStore().logoutUser()
+      next({ name: "Home" })
+    }
   }
 ]
 
