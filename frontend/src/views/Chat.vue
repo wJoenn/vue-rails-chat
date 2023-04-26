@@ -6,7 +6,7 @@
     </nav>
 
     <div class="content">
-      <div class="messages">
+      <div ref="messagesElement" class="messages">
         <div
           v-for="message in messages"
           :key="message.id"
@@ -23,7 +23,7 @@
       </div>
 
       <form @submit.prevent="messageCreate">
-        <textarea v-model="newMessage" rows="5" />
+        <textarea v-model="newMessage" rows="5" @keyup.enter.exact.prevent="messageCreate" />
         <button><FontAwesomeIcon icon="fa-solid fa-paper-plane" class="send" /></button>
       </form>
     </div>
@@ -31,15 +31,25 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from "vue"
+  import {
+    ref,
+    nextTick,
+    onBeforeUnmount,
+    onMounted
+  } from "vue"
+  import { createConsumer } from "@rails/actioncable"
   import moment from "moment"
   import useSessionStore from "../stores/SessionStore"
 
   const sessionStore = useSessionStore()
+  const channel = createConsumer("ws://localhost:3000/cable")
+
   const chatrooms = ref([])
   const currentChatroom = ref(null)
+  const messagesElement = ref(null)
   const messages = ref([])
   const newMessage = ref("")
+
   const url = import.meta.env.VITE_BACKEND_URL
 
   const messageCreate = async () => {
@@ -71,10 +81,26 @@
     })
   }
 
+  const addMessage = data => {
+    messages.value.push(data)
+    nextTick(() => {
+      messagesElement.value.lastElementChild.scrollIntoView()
+    })
+  }
+
   onMounted(async () => {
     await fetchChatrooms()
     await fetchMessages()
+
+    messagesElement.value.lastElementChild.scrollIntoView()
+
+    channel.subscriptions.create(
+      { channel: "ChatroomChannel", id: currentChatroom.value },
+      { received: data => addMessage(data) }
+    )
   })
+
+  onBeforeUnmount(() => channel.unsubscribe())
 </script>
 
 <style lang="scss" scoped>
@@ -111,7 +137,7 @@
       display: flex;
       flex-direction: column;
       flex-grow: 1;
-      padding: 20px;
+      padding: 20px 0;
 
       form {
         background-color: #181a1b;
@@ -147,8 +173,20 @@
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        justify-content: flex-end;
-        margin-bottom: 30px;
+        margin: 0 5px 30px;
+        padding: 0 15px;
+        max-height: 100%;
+        overflow: hidden;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+          width: 2px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #11242e;
+          border-radius: 50%;
+        }
 
         .message {
           margin: 10px 0;

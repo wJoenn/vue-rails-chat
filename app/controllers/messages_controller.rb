@@ -12,7 +12,9 @@ class MessagesController < ApplicationController
     message.username = current_user.username
 
     if message.save
-      render json: message, status: :ok
+      ChatroomChannel.broadcast_to(@chatroom, message)
+
+      head :ok
     else
       render json: message.errors.full_messages, status: :unprocessable_entity
     end
