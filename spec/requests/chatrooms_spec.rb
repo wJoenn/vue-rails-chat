@@ -21,10 +21,7 @@ RSpec.describe "Chatrooms", type: :request do
 
     context "When user is logged in" do
       before do
-        post "/users/sign_in",
-          params: { user: { email: user.email, password: user.password } }.to_json,
-          headers: { "Content-Type": "application/json" },
-          env: { "devise.mapping": Devise.mappings[:user] }
+        sign_in(user.email, user.password)
 
         get "/chatrooms"
       end

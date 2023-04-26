@@ -1,12 +1,5 @@
 require "rails_helper"
 
-def log_in(email)
-  post "/users/sign_in",
-    params: { user: { email:, password: user.password } }.to_json,
-    headers: { "Content-Type": "application/json" },
-    env: { "devise.mapping": Devise.mappings[:user] }
-end
-
 def log_out
   delete "/users/sign_out", env: { "devise.mapping": Devise.mappings[:user] }
 end
@@ -28,7 +21,7 @@ RSpec.describe "Users::Sessions", type: :request do
   describe "POST /create" do
     context "When user is logged in sucessfuly" do
       before do
-        log_in(user.email)
+        sign_in(user.email, user.password)
       end
 
       it_behaves_like "a JSON object"
@@ -45,7 +38,7 @@ RSpec.describe "Users::Sessions", type: :request do
 
     context "When user is not logged in successfuly" do
       before do
-        log_in("wrong email")
+        sign_in("Wrong Email", user.password)
         get "/users/sign_in", headers: { "Content-Type": "application/json" } if response.status == 401
       end
 
