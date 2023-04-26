@@ -2,7 +2,7 @@
   "name": "app",
   "private": "true",
   "scripts": {
-    "dev": "concurrently --kill-others -n Rails:api,Vite:frontend -c red,green \"rails s\" \"yarn vite:serve\"",
+    "dev": "concurrently --kill-others -n Rails:,Vite:,Redis: -c red,green,blue \"rails s\" \"yarn vite:serve\" \"redis-server\"",
     "lint": "cd frontend && yarn eslint --ext .js,.vue . --max-warnings=0",
     "vite:serve": "cd frontend && vite",
     "vite:build": "cd frontend && vite build",
