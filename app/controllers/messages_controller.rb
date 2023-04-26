@@ -9,6 +9,7 @@ class MessagesController < ApplicationController
     message = Message.new(message_params)
     message.chatroom = @chatroom
     message.user = current_user
+    message.username = current_user.username
 
     if message.save
       render json: message, status: :ok
