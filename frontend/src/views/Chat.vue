@@ -26,7 +26,6 @@
     onMounted
   } from "vue"
   import { createConsumer } from "@rails/actioncable"
-  import moment from "moment"
   import Message from "../components/Message.vue"
 
   const channel = createConsumer("ws://localhost:3000/cable")
@@ -38,6 +37,15 @@
   const newMessage = ref("")
 
   const url = import.meta.env.VITE_BACKEND_URL
+
+  const formatDate = date => {
+    const formattedDate = new Date(date)
+      .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+      .replace(" ", "")
+      .toLowerCase()
+
+    return formattedDate
+  }
 
   const messageCreate = async () => {
     await fetch(`${url}/chatrooms/${currentChatroom.value}/messages`, {
@@ -63,13 +71,13 @@
     const data = await res.json()
     messages.value = data
     messages.value = messages.value.map(message => {
-      message.created_at = moment(message.created_at).fromNow()
+      message.created_at = formatDate(message.created_at)
       return message
     })
   }
 
   const addMessage = data => {
-    data.created_at = moment(data.created_at).fromNow()
+    data.created_at = formatDate(data.created_at)
     messages.value.push(data)
     nextTick(() => {
       messagesElement.value.lastElementChild.scrollIntoView()
