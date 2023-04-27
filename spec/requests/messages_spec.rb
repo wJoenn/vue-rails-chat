@@ -53,9 +53,11 @@ RSpec.describe "Messages", type: :request do
           create_message(chatroom.id)
         end
 
-        # it "returns a Message if saved" do
-        #   expect(response.parsed_body.key?("id")).to be_truthy
-        # end
+        it "broadcasts a new message to the chatroom channel" do
+          expect do
+            create_message(chatroom.id)
+          end.to have_broadcasted_to(chatroom).from_channel(ChatroomChannel)
+        end
 
         it "returns a http status 200" do
           expect(response).to have_http_status(:success)
