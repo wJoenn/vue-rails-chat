@@ -5,7 +5,7 @@ yarn vite:build
 
 echo "Changing urls to prod..."
 sed -i 's/http:\/\/localhost:3000/https:\/\/vue-on-rails-chat.herokuapp.com/g' public/assets/index-d5224b14.js
-sed -i 's/wss:\/\/localhost:3000\/cable/ws:\/\/vue-on-rails-chat.herokuapp.com\/cable/g' public/assets/index-d5224b14.js
+sed -i 's/ws:\/\/localhost:3000\/cable/wss:\/\/vue-on-rails-chat.herokuapp.com\/cable/g' public/assets/index-d5224b14.js
 
 echo "Pushing to Heroku..."
 git add .
