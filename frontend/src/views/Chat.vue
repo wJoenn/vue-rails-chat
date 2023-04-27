@@ -7,19 +7,7 @@
 
     <div class="content">
       <div ref="messagesElement" class="messages">
-        <div
-          v-for="message in messages"
-          :key="message.id"
-          class="message"
-          :class="{ own: message.user_id === sessionStore.getUserId }"
-        >
-          <div>
-            <h3>{{ message.username }}</h3>
-            <span>{{ message.created_at }}</span>
-          </div>
-
-          <p>{{ message.content }}</p>
-        </div>
+        <Message v-for="message in messages" :key="message.id" :message="message" />
       </div>
 
       <form @submit.prevent="messageCreate">
@@ -39,9 +27,8 @@
   } from "vue"
   import { createConsumer } from "@rails/actioncable"
   import moment from "moment"
-  import useSessionStore from "../stores/SessionStore"
+  import Message from "../components/Message.vue"
 
-  const sessionStore = useSessionStore()
   const channel = createConsumer("ws://localhost:3000/cable")
 
   const chatrooms = ref([])
@@ -82,6 +69,7 @@
   }
 
   const addMessage = data => {
+    data.created_at = moment(data.created_at).fromNow()
     messages.value.push(data)
     nextTick(() => {
       messagesElement.value.lastElementChild.scrollIntoView()
@@ -186,31 +174,6 @@
         &::-webkit-scrollbar-thumb {
           background-color: #11242e;
           border-radius: 50%;
-        }
-
-        .message {
-          margin: 10px 0;
-          width: 100%;
-
-          div {
-            align-items: center;
-            display: flex;
-            font-size: 12px;
-            gap: 10px;
-
-            span {
-              color: #e3e3e380;
-              font-size: 0.8em;
-            }
-          }
-        }
-
-        .own {
-          text-align: right;
-
-          div {
-            justify-content: flex-end;
-          }
         }
       }
     }
