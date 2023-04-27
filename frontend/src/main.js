@@ -14,16 +14,19 @@ const pinia = createPinia()
 library.add(faEyeSlash, faEye, faPaperPlane)
 
 // Load JWT from local storage on refresh
+const loadAuthToken = async () => {
+  const authToken = localStorage.getItem("authToken")
+  const authTokenExists = authToken !== "undefined" && authToken !== null
 
-const authToken = localStorage.getItem("authToken")
-const authTokenExists = authToken !== "undefined" && authToken !== null
-
-if (authTokenExists) {
-  await useSessionStore(pinia).loginUserWithToken(authToken)
+  if (authTokenExists) {
+    await useSessionStore(pinia).loginUserWithToken(authToken)
+  }
 }
 
-app
-  .component("FontAwesomeIcon", FontAwesomeIcon)
-  .use(router)
-  .use(pinia)
-  .mount("#app")
+loadAuthToken().then(() => {
+  app
+    .component("FontAwesomeIcon", FontAwesomeIcon)
+    .use(router)
+    .use(pinia)
+    .mount("#app")
+})
