@@ -60,4 +60,7 @@ end
 group :test do
   # Use RSpec for testing [https://github.com/rspec/rspec]
   gem "rspec-rails"
+
+  # Tool to measure test coverage
+  gem 'simplecov', require: false
 end

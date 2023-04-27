@@ -38,3 +38,6 @@
 
 # Ignore Redis dump file
 dump.rdb
+
+# Ignore SimpleCov output
+/coverage

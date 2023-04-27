@@ -1,7 +1,12 @@
 # This file is copied to spec/ when you run "rails generate rspec:install"
 require "spec_helper"
+
+require "simplecov"
+SimpleCov.start
+
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
+
 Rails.root.glob("spec/support/helpers/**/*.rb").each do |file|
   require file
 end
