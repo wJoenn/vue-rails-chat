@@ -4,3 +4,4 @@ class StaticController < ActionController::Base
     render file: Rails.public_path.join("index.html"), layout: false
   end
 end
+# rubocop:enable Rails/ApplicationController

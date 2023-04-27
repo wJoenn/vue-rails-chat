@@ -16,5 +16,6 @@ echo "Cleaning up..."
 git reset HEAD~
 rm -rf public/assets
 rm public/index.html
+touch public/index.html
 
 echo "Deployment complete!"
