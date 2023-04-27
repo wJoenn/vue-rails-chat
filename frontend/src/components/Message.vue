@@ -2,7 +2,7 @@
   <div :class="{ own: message.user_id === sessionStore.getUserId, message: true }">
     <div>
       <h3>{{ message.username }}</h3>
-      <span>{{ message.created_at }}</span>
+      <span>{{ formatDate(message.created_at) }}</span>
     </div>
 
     <p>{{ message.content }}</p>
@@ -19,6 +19,15 @@
 
   const sessionStore = useSessionStore()
   const message = toRef(props, "message")
+
+  const formatDate = date => {
+    const formattedDate = new Date(date)
+      .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+      .replace(" ", "")
+      .toLowerCase()
+
+    return formattedDate
+  }
 </script>
 
 <style lang="scss" scoped>

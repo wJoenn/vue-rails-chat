@@ -1,17 +1,22 @@
 <template>
   <div id="chat">
-    <nav>
-      <button v-for="chatroom in chatrooms" :key="chatroom.id">#{{ chatroom.name }}</button>
+    <div class="left">
+      <nav>
+        <!-- eslint-disable-next-line max-len -->
+        <button v-for="chatroom in chatroomStore.getChatrooms" :key="chatroom.id" @click="moveToChatroom(chatroom.id)">
+          #{{ chatroom.name }}
+        </button>
+      </nav>
       <router-link :to="{ name: 'Logout' }">Log out</router-link>
-    </nav>
+    </div>
 
     <div class="content">
       <div ref="messagesElement" class="messages">
-        <Message v-for="message in messages" :key="message.id" :message="message" />
+        <Message v-for="message in chatroomStore.getMessages" :key="message.id" :message="message" />
       </div>
 
-      <form @submit.prevent="messageCreate">
-        <textarea v-model="newMessage" rows="5" @keyup.enter.exact.prevent="messageCreate" />
+      <form @submit.prevent="messagesCreate">
+        <textarea v-model="newMessage" rows="5" @keyup.enter.exact.prevent="messagesCreate" />
         <button><FontAwesomeIcon icon="fa-solid fa-paper-plane" class="send" /></button>
       </form>
     </div>
@@ -19,81 +24,57 @@
 </template>
 
 <script setup>
-  import {
-    ref,
-    nextTick,
-    onBeforeUnmount,
-    onMounted
-  } from "vue"
+  import { ref, nextTick, onBeforeUnmount, onMounted } from "vue"
   import { createConsumer } from "@rails/actioncable"
+
+  import useChatroomStore from "../stores/ChatroomStore"
   import Message from "../components/Message.vue"
 
-  const channel = createConsumer("ws://localhost:3000/cable")
+  const chatroomStore = useChatroomStore()
+  const actionCableConsumer = createConsumer(import.meta.env.VITE_CHANNEL_URL)
+  let channel
 
-  const chatrooms = ref([])
-  const currentChatroom = ref(null)
   const messagesElement = ref(null)
-  const messages = ref([])
   const newMessage = ref("")
 
-  const url = import.meta.env.VITE_BACKEND_URL
-
-  const formatDate = date => {
-    const formattedDate = new Date(date)
-      .toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
-      .replace(" ", "")
-      .toLowerCase()
-
-    return formattedDate
-  }
-
-  const messageCreate = async () => {
-    await fetch(`${url}/chatrooms/${currentChatroom.value}/messages`, {
-      method: "POST",
-      headers: { Authorization: localStorage.getItem("authToken"), "Content-Type": "application/json" },
-      body: JSON.stringify({ message: { content: newMessage.value } })
-    })
-
-    newMessage.value = ""
-  }
-
-  const fetchChatrooms = async () => {
-    const res = await fetch(`${url}/chatrooms`, { headers: { Authorization: localStorage.getItem("authToken") } })
-    const data = await res.json()
-    chatrooms.value = data
-    currentChatroom.value = chatrooms.value[0].id
-  }
-
-  const fetchMessages = async () => {
-    const res = await fetch(`${url}/chatrooms/${currentChatroom.value}/messages`, {
-      headers: { Authorization: localStorage.getItem("authToken") }
-    })
-    const data = await res.json()
-    messages.value = data
-    messages.value = messages.value.map(message => {
-      message.created_at = formatDate(message.created_at)
-      return message
-    })
-  }
-
-  const addMessage = data => {
-    data.created_at = formatDate(data.created_at)
-    messages.value.push(data)
+  const scrollDown = () => {
     nextTick(() => {
       messagesElement.value.lastElementChild.scrollIntoView()
     })
   }
 
-  onMounted(async () => {
-    await fetchChatrooms()
-    await fetchMessages()
+  const addMessage = data => {
+    chatroomStore.addMessage(data)
+    scrollDown()
+  }
 
-    messagesElement.value.lastElementChild.scrollIntoView()
-
-    channel.subscriptions.create(
-      { channel: "ChatroomChannel", id: currentChatroom.value },
+  const subscribeToChannel = () => {
+    channel = actionCableConsumer.subscriptions.create(
+      { channel: "ChatroomChannel", id: chatroomStore.getChatroomId },
       { received: data => addMessage(data) }
     )
+  }
+
+  const messagesCreate = async () => {
+    await chatroomStore.messagesCreate(newMessage.value)
+
+    newMessage.value = ""
+  }
+
+  const moveToChatroom = async id => {
+    await chatroomStore.updateChatroomId(id)
+    scrollDown()
+    channel.unsubscribe()
+    subscribeToChannel()
+  }
+
+  onMounted(async () => {
+    await chatroomStore.chatroomsIndex()
+    await chatroomStore.messagesIndex()
+
+    scrollDown()
+
+    subscribeToChannel()
   })
 
   onBeforeUnmount(() => channel.unsubscribe())
@@ -113,7 +94,7 @@
       cursor: pointer;
     }
 
-    nav {
+    .left {
       align-items: flex-start;
       background-color: #11101d;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -126,6 +107,13 @@
 
       button {
         font-size: 20px;
+      }
+
+      nav {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
     }
 
