@@ -10,4 +10,6 @@ Rails.application.routes.draw do
   end
 
   get "/member-data", to: "members#show"
+
+  get "*path", to: "static#index", constraints: proc { |request| !request.xhr? && request.format.html? }
 end
