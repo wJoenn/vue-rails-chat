@@ -1,6 +1,5 @@
-class StaticController < ApplicationController
-  skip_before_action :authenticate_user!
-
+# rubocop:disable Rails/ApplicationController
+class StaticController < ActionController::Base
   def index
     render file: Rails.public_path.join("index.html"), layout: false
   end
