@@ -95,6 +95,7 @@
 <style lang="scss" scoped>
   #user-form {
     margin: 0 auto;
+    text-align: center;
     width: 250px;
   }
 

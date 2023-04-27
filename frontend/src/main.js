@@ -1,7 +1,6 @@
 import { createApp } from "vue"
 import { createPinia } from "pinia"
 
-import "./assets/stylesheets/style.scss"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome"
 import { faEyeSlash, faEye, faPaperPlane } from "@fortawesome/free-solid-svg-icons"

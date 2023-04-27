@@ -1,8 +1,10 @@
 <template>
   <div :class="{ own: message.user_id === sessionStore.getUserId, message: true }">
     <div>
-      <h3>{{ message.username }}</h3>
-      <span>{{ formatDate(message.created_at) }}</span>
+      <h3 v-if="lastMessage === null || isDifferrentUser">{{ message.username }}</h3>
+      <span v-if="lastMessage === null || isDifferrentTime || isDifferrentUser">
+        {{ formatDate(message.created_at) }}
+      </span>
     </div>
 
     <p>{{ message.content }}</p>
@@ -14,11 +16,13 @@
   import useSessionStore from "../stores/SessionStore"
 
   const props = defineProps({
-    message: Object
+    message: Object,
+    lastMessage: Object
   })
 
   const sessionStore = useSessionStore()
   const message = toRef(props, "message")
+  const lastMessage = toRef(props, "lastMessage")
 
   const formatDate = date => {
     const formattedDate = new Date(date)
@@ -28,21 +32,25 @@
 
     return formattedDate
   }
+
+  const isDifferrentUser = lastMessage.value === null || lastMessage.value.username !== message.value.username
+  const isDifferrentTime = lastMessage.value === null
+    || formatDate(lastMessage.value.created_at) !== formatDate(message.value.created_at)
 </script>
 
 <style lang="scss" scoped>
   .message {
-    margin: 10px 0;
+    font-size: 0.8rem;
+    margin: 5px 0;
     width: 100%;
 
     div {
       align-items: center;
       display: flex;
-      font-size: 12px;
       gap: 10px;
 
       span {
-        color: #e3e3e380;
+        color: $lightgrey-semi;
         font-size: 0.8em;
       }
     }

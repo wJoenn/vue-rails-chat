@@ -4,7 +4,7 @@
       <nav>
         <!-- eslint-disable-next-line max-len -->
         <button v-for="chatroom in chatroomStore.getChatrooms" :key="chatroom.id" @click="moveToChatroom(chatroom.id)">
-          #{{ chatroom.name }}
+          <span>#</span><span>{{ chatroom.name }}</span>
         </button>
       </nav>
       <router-link :to="{ name: 'Logout' }">Log out</router-link>
@@ -12,11 +12,17 @@
 
     <div class="content">
       <div ref="messagesElement" class="messages">
-        <Message v-for="message in chatroomStore.getMessages" :key="message.id" :message="message" />
+        <!-- eslint-disable-next-line max-len -->
+        <Message
+          v-for="(message, index) in chatroomStore.getMessages"
+          :key="message.id"
+          :message="message"
+          :last-message="(index === 0) ? null : chatroomStore.getMessages[index - 1]"
+        />
       </div>
 
       <form @submit.prevent="messagesCreate">
-        <textarea v-model="newMessage" rows="5" @keyup.enter.exact.prevent="messagesCreate" />
+        <textarea v-model="newMessage" rows="3" @keyup.enter.exact.prevent="messagesCreate" />
         <button><FontAwesomeIcon icon="fa-solid fa-paper-plane" class="send" /></button>
       </form>
     </div>
@@ -87,33 +93,46 @@
     overflow: hidden;
     width: 100vw;
 
-    button {
-      background-color: transparent;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-    }
-
     .left {
-      align-items: flex-start;
-      background-color: #11101d;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      background-color: #14141a;
+      border-right: 1px solid #d3d3d359;
       display: flex;
       flex-direction: column;
-      flex-shrink: 0;
       justify-content: space-between;
-      padding: 20px;
-      width: 200px;
+      width: 180px;
 
-      button {
-        font-size: 20px;
+      a {
+        border-radius: 5px;
+        border-top: 1px solid #d3d3d359;
+        color: $lightgrey-semi;
+        font-size: 0.8rem;
+        padding: 10px 20px;
+        transition: color 0.3s ease;
+        width: 100%;
+
+        &:hover {
+          color: $lightgrey;
+        }
       }
 
       nav {
-        align-items: flex-start;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        padding: 20px 10px;
+
+        button {
+          border-radius: 5px;
+          color: $lightgrey-semi;
+          display: flex;
+          gap: 10px;
+          padding: 0.25rem 0.5rem;
+          transition: background-color 0.3s ease;
+          width: 100%;
+
+          &:hover {
+            background-color: rgba(250, 250, 250, 0.1);
+          }
+        }
       }
     }
 
@@ -124,19 +143,21 @@
       padding: 20px 0;
 
       form {
-        background-color: #181a1b;
-        border: 1px solid #d3d3d380;
+        background-color: #191d20;
+        border: 1px solid $lightgrey-semi;
         border-radius: 10px;
         display: flex;
         flex-direction: column;
         flex-shrink: 0;
         gap: 5px;
+        margin: 0 20px;
         overflow: hidden;
         padding: 10px;
-        width: 100%;
+        width: calc(100% - 40px);
 
         button {
           align-self: flex-end;
+          color: $lightgrey-semi;
           font-size: 0.8rem;
           width: max-content;
         }
@@ -145,6 +166,7 @@
           background-color: transparent;
           border: none;
           color: inherit;
+          font-family: inherit;
           resize: none;
 
           &:focus {
@@ -157,19 +179,23 @@
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        margin: 0 5px 30px;
+        margin: 0 5px 15px;
         padding: 0 15px;
         max-height: 100%;
         overflow: hidden;
         overflow-y: scroll;
 
+        &:hover::-webkit-scrollbar-thumb {
+          background-color: #d3d3d359;
+          border-radius: 5px;
+        }
+
         &::-webkit-scrollbar {
-          width: 2px;
+          width: 5px;
         }
 
         &::-webkit-scrollbar-thumb {
-          background-color: #11242e;
-          border-radius: 50%;
+          background-color: transparent;
         }
       }
     }

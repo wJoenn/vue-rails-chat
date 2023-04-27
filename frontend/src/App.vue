@@ -2,8 +2,8 @@
   <router-view />
 </template>
 
-<script setup>
-</script>
-
-<style scoped>
+<style lang="scss">
+  #app {
+    flex-grow: 1;
+  }
 </style>

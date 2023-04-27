@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+a {
+  color: $lightgrey;
+  text-decoration: none;
+
+  &:hover {
+    color: $lightgrey;
+  }
+}
+
+body {
+  background-color: $background-color;
+  color: $lightgrey;
+  display: flex;
+  font-family: $body-font;
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: $header-font;
+}
