@@ -37,7 +37,7 @@
   import Message from "../components/Message.vue"
 
   const chatroomStore = useChatroomStore()
-  const actionCableConsumer = createConsumer(import.meta.env.VITE_CHANNEL_URL)
+  const actionCableConsumer = createConsumer("ws://localhost:3000/cable")
   let channel
 
   const messagesElement = ref(null)

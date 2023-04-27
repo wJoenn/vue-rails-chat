@@ -1,6 +1,6 @@
 import { defineStore } from "pinia"
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+const BACKEND_URL = "http://localhost:3000"
 
 const useSessionStore = defineStore("SessionStore", {
   state: () => ({
