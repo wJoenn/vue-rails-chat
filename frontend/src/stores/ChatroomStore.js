@@ -1,7 +1,5 @@
 import { defineStore } from "pinia"
 
-console.log("Testing prepush");
-
 const BACKEND_URL = "http://localhost:3000"
 
 const useChatroomStore = defineStore("ChatroomStore", {
